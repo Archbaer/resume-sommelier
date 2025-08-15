@@ -1,25 +1,47 @@
+from analysis import evaluate
 import streamlit as st
+import sys
 import pandas as pd
 import altair as alt
 
-st.write('Hello world!')
+st.title('CV Analysis - LLM Powered Application')
 
-st.title('Resume analysis')
-uploaded_file = st.file_uploader("Choose a file", type="pdf")
+if 'uploaded_file' not in st.session_state:
+    st.session_state.uploaded_file = None
 
-if 'word' not in st.session_state:
-    st.session_state.word = ""
+uploaded_file = st.session_state.uploaded_file
 
-with st.form("word_form"):
-    word_input = st.text_input("Enter a word", key="word_input")
-    submitted = st.form_submit_button("Add word")
-    if submitted:
-        st.session_state.word = st.session_state.word_input
-        st.write(f"Added word: {st.session_state.word}")
+if uploaded_file == None:
+    st.write("Please upload a CV file to proceed.")
+    uploaded_file = st.file_uploader("Choose a file", type="pdf")
 
-if st.button("Reset"):
-    st.session_state.word = ""
-    st.session_state.word_input = ""
-    st.write('Word reset.')
+if uploaded_file:
+    with st.spinner('Processing...'):
+        response = evaluate(uploaded_file)
 
-st.write(f"Current word: {st.session_state.word}")
+    st.write(response)
+
+st.divider()
+
+st.markdown(
+    """
+    <style>
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        color: gray;
+        text-align: center;
+        padding: 10px 0;
+        z-index: 100;
+    }
+    </style>
+    <div class="footer">
+        © 2025 Resume Sommelier
+        | <a href="https://www.linkedin.com/in/daniel-pereira-2409991bb/" target="_blank">LinkedIn</a>
+        | <a href="https://www.github.com/archbaer" target="_blank">GitHub</a>
+    </div>
+    """,
+    unsafe_allow_html=True
+)
