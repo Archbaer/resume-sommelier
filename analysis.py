@@ -1,10 +1,8 @@
 from langchain_openai import OpenAI
 from dotenv import load_dotenv
 import pdfplumber
-import os 
 
 load_dotenv(override=True)
-os.environ['OPENAI_API_KEY'] = os.getenv('OPENAI_API_KEY')
 
 def extract_text_from_pdf(pdf_path):
     text = ""

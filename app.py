@@ -1,8 +1,5 @@
 from analysis import evaluate
 import streamlit as st
-import sys
-import pandas as pd
-import altair as alt
 
 st.title('CV Analysis - LLM Powered Application')
 
