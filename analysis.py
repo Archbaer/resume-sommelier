@@ -1,12 +1,26 @@
 from langchain_openai import OpenAI
 from dotenv import load_dotenv
 import pdfplumber
+from pydantic import BaseModel
 
 load_dotenv(override=True)
 
-def extract_text_from_pdf(pdf_path):
+class Request(BaseModel):
+    pdf_file: str
+
+    class Config:
+        schema_extra = {
+            "example": {
+                "pdf_file": "resume.pdf"
+            }
+        }
+
+class Response(BaseModel):
+    feedback: str
+
+def extract_text_from_pdf(pdf_file):
     text = ""
-    with pdfplumber.open(pdf_path) as pdf:
+    with pdfplumber.open(pdf_file) as pdf:
         for page in pdf.pages:
             text += page.extract_text()
     return text
@@ -67,9 +81,9 @@ CV:
 
 """
 
-def evaluate(pdf):
-    text = extract_text_from_pdf(pdf)
+def evaluate(request: Request) -> Response:
+    text = extract_text_from_pdf(request.pdf_file)
     llm = OpenAI(model='gpt-4o-mini', temperature=0, max_tokens=1500)
-    response = llm.invoke(prompt.format(resume=text))
+    feedback = llm.invoke(prompt.format(resume=text))
 
-    return response
+    return Response(feedback=feedback)

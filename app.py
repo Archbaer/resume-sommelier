@@ -1,4 +1,4 @@
-from analysis import evaluate
+from analysis import evaluate, Request
 import streamlit as st
 
 st.title('CV Analysis - LLM Powered Application')
@@ -14,8 +14,7 @@ if uploaded_file == None:
 
 if uploaded_file:
     with st.spinner('Processing...'):
-        response = evaluate(uploaded_file)
-
+        response = evaluate(Request(pdf_file=uploaded_file))
     st.write(response)
 
 st.divider()
